@@ -6,7 +6,7 @@ import numpy as np
 import json, os, time
 from math import radians, sin, cos, sqrt, atan2
 
-# ----- FRONTEND BUILD PATH (single source of truth) -----
+# Frontend Build Pathe
 FRONTEND_DIST = r"C:\Users\herin\OneDrive\code\project\templates\vacation-frontend\dist"
 
 app = Flask(__name__, static_folder=None)  # we serve static ourselves
@@ -15,7 +15,7 @@ CORS(app, resources={
     r"/recommend": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173"]},
 })
 
-# ---- Log what we're serving on startup ----
+# Log what we're serving on startup
 def _mtime(p):
     try:
         return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(os.path.getmtime(p)))
@@ -27,9 +27,8 @@ print("[FLASK] index.html exists:",
       os.path.isfile(os.path.join(FRONTEND_DIST, "index.html")),
       "mtime:", _mtime(os.path.join(FRONTEND_DIST, "index.html")))
 
-# -------------------------
-# Load & preprocessing (unchanged from your file)
-# -------------------------
+
+# Load & preprocessing 
 DATA_PATH = r"C:/Users/herin/OneDrive/code/project/travel.csv"
 
 df_raw = pd.read_csv(DATA_PATH)
@@ -84,9 +83,8 @@ activities_df = df_raw[[
     "cuisine", "wellness", "urban", "seclusion"
 ]].copy()
 
-# -------------------------
+
 # Utilities
-# -------------------------
 def haversine(lat1, lon1, lat2, lon2):
     R = 6371.0
     dlat = radians(lat2 - lat1); dlon = radians(lon2 - lon1)
@@ -172,9 +170,7 @@ def apply_filters(df_costs, climate_df, activities_df,
     out = out.sort_values(by=["final_cost_level", "ticket_price"]).reset_index(drop=True)
     return out
 
-# -------------------------
 # API
-# -------------------------
 @app.route("/health", methods=["GET"])
 def health():
     return jsonify({"status": "ok"})
@@ -247,9 +243,8 @@ def recommend():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# -------------------------
+
 # Serve built React app
-# -------------------------
 @app.route("/__dist_info", methods=["GET"])
 def dist_info():
     idx = os.path.join(FRONTEND_DIST, "index.html")
